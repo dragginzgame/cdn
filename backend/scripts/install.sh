@@ -2,8 +2,8 @@
 
 set -e
 
-# cargo doesn't work well if we've got errors
-dfx build cdn_bucket
-dfx build cdn_container
+dfx canister create --all
+dfx build bucket
+dfx build container
 
-dfx ledger fabricate-cycles --canister cdn_container --cycles 9000000000000000
+dfx ledger fabricate-cycles --canister container --cycles 9000000000000000

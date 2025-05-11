@@ -5,11 +5,11 @@
             "type": "pull",
             "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         },
-        "cdn_bucket": {
+        "bucket": {
             "type": "custom",
-            "candid": ".dfx/local/canisters/cdn_bucket/cdn_bucket.did",
-            "build": "bash -c 'backend/scripts/app/cdn_build.sh cdn_bucket'",
-            "wasm": ".dfx/local/canisters/cdn_bucket/cdn_bucket.wasm",
+            "candid": ".dfx/local/canisters/bucket/bucket.did",
+            "build": "bash -c 'backend/scripts/app/build.sh bucket'",
+            "wasm": ".dfx/local/canisters/bucket/bucket.wasm",
             "shrink": true,
             "gzip": true,
             "metadata": [
@@ -18,15 +18,15 @@
                 }
             ]
         },
-        "cdn_container": {
+        "container": {
             "type": "custom",
-            "candid": ".dfx/local/canisters/cdn_container/cdn_container.did",
-            "build": "bash -c 'backend/scripts/app/cdn_build.sh cdn_container'",
-            "wasm": ".dfx/local/canisters/cdn_container/cdn_container.wasm",
+            "candid": ".dfx/local/canisters/container/container.did",
+            "build": "bash -c 'backend/scripts/app/build.sh container'",
+            "wasm": ".dfx/local/canisters/container/container.wasm",
             "shrink": true,
             "gzip": true,
             "dependencies": [
-                "cdn_bucket"
+                "bucket"
             ],
             "metadata": [
                 {

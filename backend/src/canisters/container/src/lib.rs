@@ -111,7 +111,7 @@ pub fn init() {
 }
 
 const BUCKET_WASM: &[u8] =
-    include_bytes!("../../../../target/wasm32-unknown-unknown/release/canister_cdn_bucket.wasm");
+    include_bytes!("../../../../target/wasm32-unknown-unknown/release/canister_bucket.wasm");
 
 #[update]
 async fn upgrade_canister(
