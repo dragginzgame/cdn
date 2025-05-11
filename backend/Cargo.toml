@@ -1,0 +1,29 @@
+[workspace]
+members = ["src/canisters/bucket", "src/canisters/container"]
+resolver = "2"
+
+[workspace.package]
+rust-version = "1.86.0"
+edition = "2024"
+version = "0.2.14"
+
+[workspace.dependencies]
+candid = "0.10"
+ic-cdk = "0.18"
+base64 = "0.22"
+ciborium = "0.2"
+ic-stable-structures = "0.6.8"
+ic-certified-map = "0.4"
+serde = "1.0"
+serde_bytes = "0.11"
+sha2 = "0.10"
+
+
+# profile
+[profile.dev]
+debug = false
+opt-level = 'z'
+
+[profile.release]
+debug = false
+opt-level = 'z'

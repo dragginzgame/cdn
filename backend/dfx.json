@@ -1,0 +1,73 @@
+{
+    "dfx": "0.26.1",
+    "canisters": {
+        "internet-identity": {
+            "type": "pull",
+            "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        },
+        "cdn_bucket": {
+            "type": "custom",
+            "candid": ".dfx/local/canisters/cdn_bucket/cdn_bucket.did",
+            "build": "bash -c 'backend/scripts/app/cdn_build.sh cdn_bucket'",
+            "wasm": ".dfx/local/canisters/cdn_bucket/cdn_bucket.wasm",
+            "shrink": true,
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service"
+                }
+            ]
+        },
+        "cdn_container": {
+            "type": "custom",
+            "candid": ".dfx/local/canisters/cdn_container/cdn_container.did",
+            "build": "bash -c 'backend/scripts/app/cdn_build.sh cdn_container'",
+            "wasm": ".dfx/local/canisters/cdn_container/cdn_container.wasm",
+            "shrink": true,
+            "gzip": true,
+            "dependencies": [
+                "cdn_bucket"
+            ],
+            "metadata": [
+                {
+                    "name": "candid:service"
+                }
+            ]
+        },
+        "frontend": {
+            "frontend": {
+                "entrypoint": "frontend/build/index.html"
+            },
+            "build": "bash -c 'NETWORK=$DFX_NETWORK backend/scripts/app/frontend.sh'",
+            "source": [
+                "frontend/build"
+            ],
+            "type": "assets"
+        }
+    },
+    "networks": {
+        "staging": {
+            "providers": [
+                "https://icp0.io"
+            ],
+            "type": "persistent"
+        },
+        "mainnet": {
+            "providers": [
+                "https://icp0.io"
+            ],
+            "type": "persistent"
+        }
+    },
+    "defaults": {
+        "build": {
+            "output": "canisters/"
+        }
+    },
+    "metadata": [
+        {
+            "name": "candid:service"
+        }
+    ],
+    "version": 1
+}

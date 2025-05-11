@@ -1,0 +1,21 @@
+[package]
+name = "canister_bucket"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[[test]]
+name = "generate"
+path = "../bucket/src/lib.rs"
+
+[dependencies]
+base64 = { workspace = true }
+candid = { workspace = true }
+ciborium = { workspace = true }
+ic-cdk = { workspace = true }
+ic-certified-map = { workspace = true }
+serde = { workspace = true }
+serde_bytes = { workspace = true }
+sha2 = { workspace = true }
