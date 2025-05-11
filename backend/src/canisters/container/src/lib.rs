@@ -53,7 +53,10 @@ impl Storable for Key {
         Self(String::from_bytes(bytes))
     }
 
-    const BOUND: Bound = Bound::Bounded { max_size: MAX_KEY_SIZE, is_fixed_size: false };
+    const BOUND: Bound = Bound::Bounded {
+        max_size: MAX_KEY_SIZE,
+        is_fixed_size: false,
+    };
 }
 
 #[derive(CandidType, Deserialize, Clone, Debug)]
@@ -72,7 +75,10 @@ impl Storable for SpawnCanister {
         Decode!(bytes.as_ref(), Self).unwrap()
     }
 
-    const BOUND: Bound = Bound::Bounded { max_size: MAX_VALUE_SIZE, is_fixed_size: false };
+    const BOUND: Bound = Bound::Bounded {
+        max_size: MAX_VALUE_SIZE,
+        is_fixed_size: false,
+    };
 }
 
 thread_local! {
@@ -98,7 +104,9 @@ pub fn init() {
     println!("{:?}", "called init");
 
     OWNER.with_borrow_mut(|owner| {
-        owner.set(Key(caller().to_string())).expect("Failed to set the owner");
+        owner
+            .set(Key(caller().to_string()))
+            .expect("Failed to set the owner");
     });
 }
 
@@ -146,20 +154,29 @@ async fn upgrade_canister(
         arg: vec![],
     };
 
-    ic_install_code(arg)
-        .await
-        .map_err(|e| ApiError { err_type: ApiErrorType::BadRequest, err_msg: e.1 })?;
+    ic_install_code(arg).await.map_err(|e| ApiError {
+        err_type: ApiErrorType::BadRequest,
+        err_msg: e.1,
+    })?;
 
-    println!("upgrade successful for canister with the id {}", existing_canister.id);
+    println!(
+        "upgrade successful for canister with the id {}",
+        existing_canister.id
+    );
 
     //
     // END UPGRADE
     //
 
     // canister status
-    let c_status = ic_canister_status(CanisterIdRecord { canister_id }).await.map_err(|_| {
-        api_error(ApiErrorType::BadRequest, String::from("canister status failed..."))
-    })?;
+    let c_status = ic_canister_status(CanisterIdRecord { canister_id })
+        .await
+        .map_err(|_| {
+            api_error(
+                ApiErrorType::BadRequest,
+                String::from("canister status failed..."),
+            )
+        })?;
 
     let pd = SpawnCanister {
         id: existing_canister.id,
@@ -168,7 +185,8 @@ async fn upgrade_canister(
     };
 
     CDN_CANISTERS.with(|pc| {
-        pc.borrow_mut().insert(Key(existing_canister.id.to_string()), pd);
+        pc.borrow_mut()
+            .insert(Key(existing_canister.id.to_string()), pd);
         Ok(())
     })
 }
@@ -191,7 +209,10 @@ async fn spawn_bucket() -> Result<SpawnCanister, ApiError> {
     };
     let new_canister = create_canister(canister_settings, DEFAULT_CYCLES).await;
     let canister = new_canister.map_err(|_| {
-        api_error(ApiErrorType::BadRequest, String::from("canister creation failed..."))
+        api_error(
+            ApiErrorType::BadRequest,
+            String::from("canister creation failed..."),
+        )
     })?;
 
     println!("{:?}", "works1");
@@ -205,23 +226,37 @@ async fn spawn_bucket() -> Result<SpawnCanister, ApiError> {
     };
 
     ic_install_code(arg).await.map_err(|_| {
-        api_error(ApiErrorType::BadRequest, String::from("canister installation failed..."))
+        api_error(
+            ApiErrorType::BadRequest,
+            String::from("canister installation failed..."),
+        )
     })?;
 
     println!("{:?}", "works2");
 
-    let c_status = ic_canister_status(CanisterIdRecord { canister_id: new_canister_principal })
-        .await
-        .map_err(|_| {
-            api_error(ApiErrorType::BadRequest, String::from("canister status failed..."))
-        })?;
+    let c_status = ic_canister_status(CanisterIdRecord {
+        canister_id: new_canister_principal,
+    })
+    .await
+    .map_err(|_| {
+        api_error(
+            ApiErrorType::BadRequest,
+            String::from("canister status failed..."),
+        )
+    })?;
 
     println!("{:?}", "works3");
-    let sc = SpawnCanister { id: new_canister_principal, hash: c_status.0.module_hash, version: 1 };
+    let sc = SpawnCanister {
+        id: new_canister_principal,
+        hash: c_status.0.module_hash,
+        version: 1,
+    };
     println!("{:?}", "works1");
     println!("{:?}", sc);
-    CDN_CANISTERS
-        .with(|cc| cc.borrow_mut().insert(Key(new_canister_principal.to_string()), sc.clone()));
+    CDN_CANISTERS.with(|cc| {
+        cc.borrow_mut()
+            .insert(Key(new_canister_principal.to_string()), sc.clone())
+    });
 
     Ok(sc)
 }
@@ -244,10 +279,12 @@ fn list_buckets() -> Vec<SpawnCanister> {
 
 #[update]
 async fn get_controllers(cid: Principal) -> Vec<Principal> {
-    let canister_info =
-        canister_info(CanisterInfoRequest { canister_id: cid, num_requested_changes: None })
-            .await
-            .unwrap();
+    let canister_info = canister_info(CanisterInfoRequest {
+        canister_id: cid,
+        num_requested_changes: None,
+    })
+    .await
+    .unwrap();
 
     canister_info.0.controllers
 }
